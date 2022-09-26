@@ -1,0 +1,159 @@
+---
+title: "College Scorecard Data Visualization"
+author: 
+- name: Rachael An
+  affiliation: Smith College
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    fig_width: 7
+    fig_height: 7
+    fig_caption: true
+    theme: cerulean
+    df_print: paged
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  echo = TRUE
+)
+library(tidyverse)
+library(rscorecard)
+
+sc_key("Ubtz55oqfNs87uamOdyXh7VEfoJddroYknl91mKy")
+```
+
+```{r import}
+scorecard <- sc_init() %>%
+  sc_year(2019) %>%                  
+  sc_filter(stabbr == "MA") %>%      
+  sc_select(unitid, instnm, grad_debt_mdn_supp, pcip23, ugds_white, control, iclevel, pctpell) %>% 
+  sc_get()
+
+scorecard$control_factored <- factor(scorecard$control, 
+                                     levels = c(1, 2, 3, 4),
+                                     labels = c("Public", 
+                                                "Private nonprofit", 
+                                                "Private for-profit",
+                                                "Foreign"))
+
+# Factor variable 
+scorecard$iclevel_factored <- factor(scorecard$iclevel, 
+                                     levels = c(1, 2, 3), 
+                                     labels = c("4-year", 
+                                                "2-year", 
+                                                "Less-than-2-year")) 
+```
+
+# Univariate plot
+
+```{r plot_1, warning = FALSE}
+# Create plot 1  
+ggplot(data = scorecard, 
+       aes(x = ugds_white)) +
+  geom_histogram(stat_bin=30,color = "white") +
+  labs(title = str_wrap("Distribution of Degree-seeking White Undergraduate Student Enrollment in MA Institutions",76),
+       subtitle = "Scoreboard Technical Review Panel, 2019",
+       x = "Total Share of Degree-seeking White Undergraduate Student Enrollment", 
+       y = "Count of Institutions")
+```
+
+# Multivariate plot
+```{r plot_2, warning = FALSE}
+# Create plot 2  
+ggplot(data = scorecard, 
+       aes(x = ugds_white, 
+           y = pctpell)) +
+  geom_point(alpha=0.75, size=0.75) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = str_wrap("Relationship Between Share of White Undergraduate Student Enrollment and Percentage of Undergraduate Pell Grants Recipients in MA Institutions",76), 
+       subtitle = "Scoreboard Technical Review Panel, 2019",
+       x = "Total Share of Degree-seeking White Undergraduate Student Enrollment", 
+       y = "Percentage of Undergraduates Who Receive Pell Grants") +
+  geom_smooth(method = lm)
+```
+
+```{r plot_3, warning = FALSE}
+# Create plot 3  
+ggplot(data = scorecard, 
+       aes(x = ugds_white, 
+           y = pcip23)) + 
+  geom_point(alpha = 0.75, size = 0.75) + 
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = str_wrap("Relationship between Share of White Undergraduate Student Enrollment and Percentage of Degrees in English by Level of Institution in MA",76),
+       subtitle = "Scoreboard Technical Review Panel, 2019",
+       x = "Total Share of Degree-seeking White Undergraduate Student Enrollment", 
+       y = "Percentage of Degrees in English Language/Literature") + 
+  facet_wrap(vars(iclevel_factored)) + 
+  geom_smooth(method = lm)
+```
+
+```{r plot_4, warning = FALSE} 
+# Create plot 4  
+ggplot(data = scorecard, 
+       aes(x = ugds_white, 
+           y = pcip23)) + 
+  geom_point(alpha = 0.75, size = 0.75) + 
+  scale_y_continuous(labels = scales::percent) + 
+  labs(title = str_wrap("Relationship between Share of White Undergraduate Student Enrollment and Percentage of Degrees Awarded in English by Control of Institution in MA",76),
+       subtitle = "Scoreboard Technical Review Panel, 2019",
+       x = "Total Share of Degree-seeking White Undergraduate Student Enrollment", 
+       y = "Percentage of Degrees in English Language/Literature") + 
+  facet_wrap(vars(control_factored)) + 
+  geom_smooth(method = lm)
+```
+ 
+```{r plot_5, warning = FALSE}
+# Create plot 5 
+ggplot(data = scorecard,
+       aes(x = reorder(iclevel_factored, grad_debt_mdn_supp, median), 
+           y = grad_debt_mdn_supp)) + 
+  geom_boxplot() +
+  coord_flip() +
+  labs(title = "Distribution of Median Debt of Completers by Level of Institution in MA",
+       subtitle = "Scoreboard Technical Review Panel, 2019",
+       x = "Level of Institution", 
+       y = "Median Debt of Completers") 
+```
+
+```{r plot_6, warning = FALSE}
+# Create plot 6  
+ggplot(data = scorecard,
+      aes(x = reorder(control_factored, grad_debt_mdn_supp, median), 
+          y = grad_debt_mdn_supp)) + 
+  geom_boxplot() +
+  coord_flip()+
+  labs(title = "Distribution of Median Debt of Completers by Control of Institution in MA",
+       subtitle = "Scoreboard Technical Review Panel, 2019",
+       x = "Control of Institution", 
+       y = "Median Debt of Completers")
+```
+
+# Report
+
+### About the Dataset
+The dataset I am working with is from the U.S. Department of Education and is referred to as the College Scoreboard. It breaks down many elements that students and families may want to consider when looking into different college institutions. It is collected from federal reports of institutions, federal financial aid, and tax information. In our plots we will be visualizing the relationship between degree-seeking undergraduate white students and the percentage of degrees in English Language and Literature dependent on the institution level in Massachusetts (less than 2yr, 2yr, 4yr). 
+
+### Variables
+
+#### Total Share of Enrollment of Undergraduate Degree-seeking Students Who are White
+Students self-report their ethnicity.
+
+#### iclevel, pctpell, unitid, instnm, control, pcip23
+The data from the variables are created by IPEDS.
+
+#### Median Debt of Completers
+The data from the variables are created by NSLDS. 
+
+### Univariate Plot
+In our Univariate plot we can see that it resembles a normal distribution, with the highest values being between 50% and 75%. This indicates that the majority of institutions have between 50% and 75% of white degree-seeking undergraduate students. 
+
+### Multivariate Plot
+In the multivariate graph of the relationship between white undergraduate students and degrees in english by level of Institution in Massachusetts. When these variables are plotted with each other, we can see that 4-year institutions have a clear slope as well as more scattered data points. This clearly indicates that 4-year institutions have students receiving more degrees in English language/literature. Furthermore, the slight slope indicates that 4-year institutions with a higher percentage of white undergraduate students, have a higher percentage of degrees received in English language/literature.
+
+### Ethical Concern
+There are students who don’t take the surveys sent out to get this data. There are students that may not have the time to fill out the surveys. Students might have misinterpreted questions wrong on the survey and answered it incorrectly, making the information inaccurate. The assumptions are that these numbers are accurate and representative of the data being displayed. This data can be beneficial to high school students and parents looking for rough numbers on certain statistics to determine if an institution is suitable for them or not. This data can be harmful because the numbers may not be accurate and might give a false impression to the high school student/parent.
