@@ -1,8 +1,8 @@
 <p align="center">
-<img src="images/college-us-dept-of-ed.jpeg" height="400"/>
+<img src="images/college-scorecard.png" height="400"/>
 </p>
 
-> Used [**College Scorecard**](https://collegescorecard.ed.gov/) data to visualize the relationship between students enrollment and the percentage of degrees in English dependant on the type and level of institution in Massachusetts. 
+> Used [**College Scorecard**](https://collegescorecard.ed.gov/) data to visualize the relationship between student enrollment and the distribution of degree areas based on the type and level of institution in Massachusetts. 
 
 <a name="toc"/></a>
 ## Table of Contents
