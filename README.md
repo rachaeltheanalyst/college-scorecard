@@ -15,6 +15,8 @@
 
 4. [Ethical Concern](#ethical)
 
+5. [Source](#source)
+
 <a name="about"/></a>
 ## 1. About the Dataset
 [Back to ToC](#toc)
@@ -59,3 +61,9 @@ In the multivariate graph of the relationship between white undergraduate studen
 [Back to ToC](#toc)
 
 There are students who don’t take the surveys sent out to get this data. There are students that may not have the time to fill out the surveys. Students might have misinterpreted questions wrong on the survey and answered it incorrectly, making the information inaccurate. The assumptions are that these numbers are accurate and representative of the data being displayed. This data can be beneficial to high school students and parents looking for rough numbers on certain statistics to determine if an institution is suitable for them or not. This data can be harmful because the numbers may not be accurate and might give a false impression to the high school student/parent.
+
+<a name="source"/></a>
+## 5. Source
+[Back to ToC](#toc)
+
+This project was a collaboration between Rachael An, Bobi Arce Mack, and Frankie Romeo.
